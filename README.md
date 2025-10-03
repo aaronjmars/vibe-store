@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vibe App Store
 
-## Getting Started
+A Next.js application that generates AI-powered app ideas with custom thumbnails and interactive demos, styled with an iOS 6-inspired interface.
 
-First, run the development server:
+## Features
 
+- **AI App Generation**: Generates 15 unique app concepts using Google's Gemini 2.5 Flash via OpenRouter
+- **Dynamic Thumbnails**: Creates custom app icons using Replicate's Flux-Schnell image generation model
+- **Interactive Demos**: Generates working app prototypes using Vercel's V0 SDK
+- **Local Caching**: Stores generated apps and demos in browser localStorage for fast reloading
+- **iOS 6 UI**: Retro-inspired skeuomorphic design with glossy effects and gradients
+
+## How It Works
+
+### 1. App Idea Generation (`/api/generate-app-idea`)
+- Uses OpenRouter's API with Gemini 2.5 Flash to generate app concepts
+- Requests 15 unique app ideas with names, descriptions, and image prompts
+- Returns structured JSON data for each app concept
+
+### 2. Thumbnail Creation (`/api/generate-thumbnail`)
+- Leverages Replicate's Flux-Schnell model for fast image generation
+- Creates iOS 6-style skeuomorphic app icons
+- Generates images asynchronously as placeholders load
+- Caches results in localStorage
+
+### 3. Interactive Demo Generation (`/api/generate-v0-app`)
+- Uses Vercel's V0 SDK to create functional app prototypes
+- Polls the V0 API for up to 3 minutes to retrieve the demo URL
+- Falls back to web URL if generation times out
+- Caches successful demo URLs for instant loading
+
+### 4. User Interface
+- **Home Page**: Grid of 15 generated apps with thumbnail icons
+- **App Detail Page**: Full-screen iframe displaying the generated V0 demo
+- **Refresh Button**: Clears cache and generates a new set of apps
+- **iOS 6 Styling**: Gradient backgrounds, glossy overlays, and retro UI elements
+
+## Setup
+
+### Prerequisites
+- Node.js 20+
+- API keys for:
+  - [Replicate](https://replicate.com/) (for image generation)
+  - [OpenRouter](https://openrouter.ai/) (for LLM access)
+  - [Vercel V0](https://v0.dev/) (for app demos)
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <your-repo-url>
+cd vibe-store
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Create a `.env.local` file with your API keys:
+```bash
+REPLICATE_API_TOKEN=your_replicate_token
+OPENROUTER_API_KEY=your_openrouter_key
+V0_API_KEY=your_v0_api_key
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Run the development server:
+```bash
+npm run dev
+```
 
-## Learn More
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+vibe-store/
+├── app/
+│   ├── api/
+│   │   ├── generate-app-idea/route.ts    # LLM-powered app concept generation
+│   │   ├── generate-thumbnail/route.ts   # Image generation for app icons
+│   │   ├── generate-v0-app/route.ts      # V0 demo creation
+│   │   ├── get-v0-chat/route.ts          # Retrieve V0 chat data
+│   │   └── get-v0-messages/route.ts      # Fetch V0 messages
+│   ├── app/[id]/page.tsx                 # Individual app detail page
+│   ├── layout.tsx                        # Root layout
+│   └── page.tsx                          # Home page with app grid
+├── public/                               # Static assets
+├── .env.example                          # Example environment variables
+└── package.json                          # Dependencies
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech Stack
 
-## Deploy on Vercel
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4
+- **AI/ML Services**:
+  - OpenRouter (Gemini 2.5 Flash)
+  - Replicate (Flux-Schnell)
+  - Vercel V0 SDK
+- **State Management**: React Hooks + localStorage
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Development
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+# Development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
+
+# Run linter
+npm run lint
+```
+
+## Deployment
+
+The easiest way to deploy is using [Vercel](https://vercel.com):
+
+1. Push your code to GitHub
+2. Import the repository in Vercel
+3. Add your environment variables in Vercel's project settings
+4. Deploy!
+
+## License
+
+MIT
+
+## Credits
+
+Built with Next.js, powered by AI from OpenRouter, Replicate, and Vercel V0.
